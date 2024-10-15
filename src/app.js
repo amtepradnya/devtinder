@@ -3,32 +3,27 @@ const app=express();
 
 
 
-// app.use("/user",(req,res)=>{
-//     res.send("hii hello")
-// })
-// app.use("/test",(req,res)=>{
-//     res.send("hii test")
-// })
+app.get("/user",
+    (req,res , next)=>{
+    console.log("loop 1")
+    next()
+    },
+    (req,res, next)=>{
+        console.log("loop 2")
+        // res.send("loop 2");
+        next()
+    },
+    (req,res)=>{
+        console.log("loop 3")
+        res.send("loop 3");
+    },   (req,res)=>{
+        console.log("loop 4")
+        res.send("loop 4");
+    },
 
-app.get("/user",(req,res)=>{
-    res.send({"firstname":"prad","lastname":"amte"})
+);
 
-    // console.log({"firstname":"prad","lastname":"amte"})
-})
-app.post("/user",(req,res)=>{
-    res.send({"firstname":"akshay","lastname":"amte"})
 
-    // console.log({"firstname":"prad","lastname":"amte"})
-})
-app.delete("/user",(req,res)=>{
-    res.send("delete call")
-
-    // console.log({"firstname":"prad","lastname":"amte"})
-})
-
-app.use("/",(req,res)=>{
-    res.send("hii pradnya")
-})
 
 app.listen(3000,()=>{
 
