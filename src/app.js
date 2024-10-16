@@ -1,28 +1,21 @@
 const express=require("express");
 const app=express();
 
+const {adminAuth, userAuth} = require("./middlewares/auth");
 
+app.use("/admin", adminAuth);
 
-app.get("/user",
-    (req,res , next)=>{
-    console.log("loop 1")
-    next()
-    },
-    (req,res, next)=>{
-        console.log("loop 2")
-        // res.send("loop 2");
-        next()
-    },
-    (req,res)=>{
-        console.log("loop 3")
-        res.send("loop 3");
-    },   (req,res)=>{
-        console.log("loop 4")
-        res.send("loop 4");
-    },
+app.get("/user",userAuth,(req,res)=>
+{
+    res.send("user data")
+    console.log("user data")
+});
 
-);
-
+app.get("/admin/getdata",(req,res)=>
+    {
+        res.send("admin data")
+        console.log("admin data")
+    });
 
 
 app.listen(3000,()=>{
