@@ -68,8 +68,8 @@ app.post("/signup", async (req,res)=>{
         await user.save();
         res.send("data inserted successfully")
 
-    }catch(err){
-        res.status(400).send("failed to insert data error is: ", +err.message)
+    }catch (err){
+        res.status(400).send("failed to insert data: "+err.message)
 
     }
  
@@ -78,8 +78,27 @@ app.post("/signup", async (req,res)=>{
 app.patch("/user",async (req,res)=>{
     const userId=req.body.userId;
     const data=req.body;
+
+
+
     try{
-        const user = await User.findByIdAndUpdate({_id:userId},data);
+        const ALLOWED_UPDATES = ["photoUrl", "about", "gender", "age", "skills"];
+      
+        const isUpdateAllowed = Object.keys(data).every((k) => 
+            ALLOWED_UPDATES.includes(k)
+        );
+
+    
+        if(!isUpdateAllowed){
+            throw new Error ("update not allowed");
+           
+        }
+        const user = await User.findByIdAndUpdate({_id:userId},data,{
+            new:true,
+            runValidators:true,
+
+        }
+        );
 
         if (!user) {
           res.status(404).send("User not found");
@@ -88,10 +107,10 @@ app.patch("/user",async (req,res)=>{
       }
 
     }catch(err){
-        res.status(400).send("something wrong");
+        res.status(400).send("update failed"+err.message);
 
     }
-})
+});
 
 connectDB()
 .then(()=>{

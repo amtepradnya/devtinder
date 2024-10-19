@@ -1,25 +1,77 @@
 const mongoose=require("mongoose");
+const validator = require("validator"); // Import validator
 
 const userSchema=  mongoose.Schema({
     "firstName":{
-        type:String
+        type:String,
+        required:true,
+        minLength:2,
+        maxLength:5,
     },
     "lastName":{
         type:String
     },
     "emailId":{
-        type:String
+        type:String,
+        required:true,
+        unique:true,
+        lowerCase:true,
+        validate(value){
+        if(!validator.isEmail(value)){
+            throw new Error("invalid email address " +value);
+            
+        }
+    }
     },
     "password":{
-        type:String
+        type:String,
+        required:true,
+        validate(value){
+            if(!validator.isStrongPassword(value)){
+                throw new Error("invalid password  " +value);
+                
+            }
+        }
     },
     "age":{
-        type:Number
+        type:Number,
+        required:true,
+        min:4,
+        max:20
     },
     "gender":{
-        type:String
+        type:String,
+        required:true,
+        validate(value){
+            if(!["male","female","others"].includes(value)){
+                throw new Error("gender data is not valid");
+                
+            }
+        },
     },
-});
+    "photoUrl":{
+        type:String,
+        default:"https://www.freepik.com/premium-vector/vector-flat-illustration-grayscale-avatar-user-profile-person-icon-profile-picture-business-profile-woman-suitable-social-media-profiles-icons-screensavers-as-templatex9xa_258647889.htm#query=default%20avatar&position=7&from_view=keyword&track=ais_hybrid&uuid=5e02d85e-1efb-4ae2-b04e-0f37857e5170",
+        validate(value){
+            if(!validator.isURL(value)){
+                throw new Error("invalid url  " +value);
+                
+            }
+        }
+    },
+    "about":{
+        type:String,
+        default:"abcd"
+    },
+    "skills":{
+        type:[String],
+    },
+   
+},
+{
+"timestamps":true,
+}
+);
 
 const User=mongoose.model("User",userSchema);
 
